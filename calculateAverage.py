@@ -15,7 +15,7 @@ def get_file_chunks(
     chunk_size = file_size // cpu_count
 
     start_end = list()
-    with open(file_name, encoding="utf-8", mode="r+b") as f:
+    with open(file_name, mode="r+b") as f:
 
         def is_new_line(position):
             if position == 0:
@@ -62,9 +62,10 @@ def _process_file_chunk(
 ) -> dict:
     """Process each file chunk in a different process"""
     result = dict()
-    with open(file_name, encoding="utf-8", mode="rb") as f:
+    with open(file_name, mode="rb") as f:
         f.seek(chunk_start)
         gc_disable()
+    
         for line in f:
             chunk_start += len(line)
             if chunk_start > chunk_end:
@@ -128,5 +129,5 @@ def process_file(
 
 
 if __name__ == "__main__":
-    cpu_count, *start_end = get_file_chunks("measurements.txt")
-    process_file(cpu_count, start_end[0])
+    cpu_count, start_end = get_file_chunks("measurements.txt")
+    process_file(cpu_count, start_end)
